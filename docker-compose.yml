@@ -13,8 +13,6 @@ services:
       - "30303:30303"
       - "30303:30303/udp"
       - "8545:8545"
-    networks:
-      - oraclize_network
 
   ethereum-bridge:
     container_name: oraclize-bridge
@@ -24,9 +22,8 @@ services:
     volumes:
       - ./files/instance:/ethereum-bridge/config/instance
     command: bash -c "sleep 90 && node bridge -H geth:8545 -a 1"
-    networks:
-      - oraclize_network
 
 networks:
-  oraclize_network:
-    driver: bridge
+  default:
+    external:
+      name: oraclize_network
