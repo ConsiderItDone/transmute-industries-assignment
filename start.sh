@@ -28,5 +28,10 @@ sleep 280
 OAR=$(docker run --rm -it -v "$DIR/files/instance:/tmp/instance" -e OAR_DIR=/tmp/instance oraclize-truffle node extractOar.js)
 echo "OAR is $OAR"
 
+#set OAR in smart contract
+docker run --rm -it -e OAR=$OAR -e ETH_HOST=$GETH_IP --network=oraclize_oraclize_network oraclize-truffle bash run_test.sh
+#docker run --network=oraclize_oraclize_network --rm -it -e OAR=$OAR -e ETH_HOST=$GETH_IP oraclize-truffle bash
+
+
 # stop and remove containers
 docker-compose stop && docker-compose rm -f

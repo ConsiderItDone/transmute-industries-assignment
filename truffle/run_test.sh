@@ -11,3 +11,5 @@ if [ -z "$OAR" ]; then
 fi
 
 sed -i "s/_OAR_/$OAR/g" "$DIR/contracts/YoutubeViews.sol"
+
+truffle test/youtube.js

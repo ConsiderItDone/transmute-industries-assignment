@@ -23,7 +23,7 @@ contract('YoutubeViews', function (accounts) {
 
                 console.log(viewCount)
 
-                assert.equal(viewCount, 2942303145, "View count is different");
+                assert.isAbove(viewCount, 0, "View count is greater than 0");
 
             }
 
