@@ -41,4 +41,4 @@ docker run --rm -it -e OAR=$OAR -e ETH_HOST=$GETH_IP --network=oraclize_network 
 
 
 # stop and remove containers
-#docker-compose stop && docker-compose rm -f
+docker-compose stop && docker-compose rm -f
