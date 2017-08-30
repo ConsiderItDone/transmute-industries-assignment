@@ -2,6 +2,14 @@
 
 set -eu
 
+# Get the directory of where this script is.
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+#clean up
+rm -rf "$DIR/files/instance"
+
 # Start docker-compose
 docker-compose up -d
 
@@ -13,9 +21,12 @@ GETH_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{
 echo "geth ip is $GETH_IP"
 
 # wait for ethereum network
-sleep 120
+echo "Waiting for ethereum network and ethereum bridge..."
+sleep 280
 
 # extract oar
+OAR=$(docker run --rm -it -v "$DIR/files/instance:/tmp/instance" -e OAR_DIR=/tmp/instance oraclize-truffle node extractOar.js)
+echo "OAR is $OAR"
 
 # stop and remove containers
 docker-compose stop && docker-compose rm -f

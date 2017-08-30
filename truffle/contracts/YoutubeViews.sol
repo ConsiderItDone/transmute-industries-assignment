@@ -9,12 +9,12 @@ contract YoutubeViews is usingOraclize {
     uint public viewsCount;
 
     function YoutubeViews() payable {
-        OAR = OraclizeAddrResolverI(0x6f485c8bf6fc43ea212e93bbf8ce046c7f1cb475);
+        OAR = OraclizeAddrResolverI(_OAR_);
         update(0);
     }
 
     function __callback(bytes32 myid, string result) {
-        //if (msg.sender != oraclize_cbAddress()) throw;
+        if (msg.sender != oraclize_cbAddress()) throw;
         viewsCount = parseInt(result, 0);
         ChangeCount(viewsCount);
         // do something with viewsCount
