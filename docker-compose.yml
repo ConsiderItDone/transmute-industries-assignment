@@ -1,0 +1,21 @@
+version: '2'
+services:
+  geth:
+    image: ethereum/client-go
+    entrypoint: ""
+    command: sh -c "geth --datadir=/root/.ethereum/devchain init /root/files/genesis.json && geth --datadir=/root/.ethereum/devchain --nodekeyhex=091bd6067cb4612df85d9c1ff85cc47f259ced4d4cd99816b14f35650f59c322 --rpcapi 'db,personal,eth,net,web3' --rpccorsdomain='*' --networkid=1234 --rpc --rpcaddr='0.0.0.0' --mine --minerthreads=1 --unlock '0,1,2,3,4,5,6,7,8,9' --password /root/files/password.txt"
+    volumes:
+      - ./files/password.txt:/root/files/password.txt:ro
+      - ./files/genesis.json:/root/files/genesis.json:ro
+      - ./files/keystore:/root/.ethereum/devchain/keystore:rw
+    ports:
+      - "30303:30303"
+      - "30303:30303/udp"
+      - "8545:8545"
+
+  ethereum-bridge:
+    build: ethereum-bridge
+    links:
+      - geth
+    command: bash -c "sleep 90 && node bridge -H geth:8545 -a 1"
+
