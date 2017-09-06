@@ -5,7 +5,7 @@ set -eu
 isOARGenerated()
 {
     OARDIR=$1
-    COUNT_JS_FILES=$(ls -l $OARDIR/*.json | wc -l)
+    COUNT_JS_FILES=$(ls -l $OARDIR/*.json 2>/dev/null | wc -l)
 
 	#echo $COUNT_JS_FILES
 	[[ $COUNT_JS_FILES -gt 0 ]]
