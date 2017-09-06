@@ -2,6 +2,17 @@
 
 set -eu
 
+isOARGenerated()
+{
+    set -x
+
+    OARDIR=$1
+    COUNT_JS_FILES=$(ls -l $OARDIR/*.json | wc -l)
+
+	echo $COUNT_JS_FILES
+	[[ $COUNT_JS_FILES -gt 0 ]]
+}
+
 # Get the directory of where this script is.
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
@@ -11,7 +22,7 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 rm -rf "$DIR/files/instance"
 
 # Start docker-compose
-docker-compose up -d
+docker-compose up --build -d
 
 # build image with truffle test
 docker build -t oraclize-truffle -f truffle/Dockerfile truffle
@@ -22,7 +33,11 @@ echo "geth ip is $GETH_IP"
 
 # wait for ethereum network
 echo "Waiting for ethereum network and ethereum bridge..."
-sleep 280
+
+until isOARGenerated "$DIR/files/instance"; do
+  >&2 echo "OAR dir is empty. Sleeping 10 s"
+  sleep 10
+done
 
 # extract oar
 OAR=$(docker run --rm -it -v "$DIR/files/instance:/tmp/instance" -e OAR_DIR=/tmp/instance oraclize-truffle node extractOar.js)

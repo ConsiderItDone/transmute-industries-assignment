@@ -19,11 +19,13 @@ services:
   ethereum-bridge:
     container_name: oraclize-bridge
     build: ethereum-bridge
+    depends_on:
+      - geth
     links:
       - geth
     volumes:
       - ./files/instance:/ethereum-bridge/config/instance
-    command: bash -c "sleep 90 && node bridge -H geth:8545 -a 1"
+    command: "./wait-for-geth.sh node bridge -H geth:8545 -a 1"
     networks:
       - oraclize_network
 
